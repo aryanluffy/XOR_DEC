@@ -528,7 +528,7 @@ void setxor(int u,int p)
   {
     if(x==p)continue;
     setxor(x,u);
-    subxor[u]^=subxor[x];
+    subxor[u]=subxor[u]^subxor[x];
   }
 }
 
@@ -539,20 +539,25 @@ void solve(int u,int p)
     if(x==p)continue;
     solve(x,u);
   }
+  if(tree[u].size()==1){
+    if(subxor[u]==y)root[u]=1;
+    return;
+  }
   if(tree[u][0]==p)
   {
      int x=tree[u][1];
-     dp[u][0][1]=(root[x]+(subxor[x]==0)*rootx[x])+(rootx[x]+(subxor[x]==y)*root[x]);
+     dp[u][0][1]=(root[x]+(subxor[x]==0)*rootx[x])+rootx[x]+(subxor[x]==y)*root[x];
      dp[u][1][1]=(rootx[x]+(subxor[x]==y)*root[x])+root[x]+(subxor[x]==0)*rootx[x];
   }
   else
   {
      int x=tree[u][0];
-     dp[u][0][0]=(root[x]+(subxor[x]==0)*rootx[x])+(rootx[x]+(subxor[x]==y)*root[x]);
+     dp[u][0][0]=(root[x]+(subxor[x]==0)*rootx[x])+rootx[x]+(subxor[x]==y)*root[x];
      dp[u][1][0]=(rootx[x]+(subxor[x]==y)*root[x])+root[x]+(subxor[x]==0)*rootx[x];
   }
-  
-  f(i,1,tree[u].size())
+  int z=1;
+  if(tree[u][0]==p)z++;
+  f(i,z,tree[u].size())
   {
      int x=tree[u][i];if(x==p)continue;
      dp[u][0][i]=dp[u][0][i-1]*(root[x]+(subxor[x]==0)*rootx[x])+dp[u][1][i-1]*(rootx[x]+(subxor[x]==y)*root[x]);
@@ -562,11 +567,8 @@ void solve(int u,int p)
      {dp[u][0][i]=dp[u][0][i-2]*(root[x]+(subxor[x]==0)*rootx[x])+dp[u][1][i-2]*(rootx[x]+(subxor[x]==y)*root[x]);
       dp[u][1][i]=dp[u][0][i-2]*(rootx[x]+(subxor[x]==y)*root[x])+dp[u][1][i-2]*(root[x]+(subxor[x]==0)*rootx[x]);}
   }
-  if(tree[u].size()==1){
-    if(subxor[u]==y)root[u]=1;
-    return;
-  }
-  if(p==tree[u][tree[u].size()]-1)
+  
+  if(p==tree[u][tree[u].size()-1])
   root[u]=dp[u][1][tree[u].size()-2] ,rootx[u]=dp[u][0][tree[u].size()-2];
   else 
   root[u]=dp[u][1][tree[u].size()-1] ,rootx[u]=dp[u][0][tree[u].size()-1];

@@ -540,7 +540,9 @@ void solve(int u,int p)
     solve(x,u);
   }
   if(tree[u].size()==1){
-    if(subxor[u]==y)root[u]=1;
+    //if(subxor[u]==y)root[u]=1;
+    root[u]=1;
+    rootx[u]=1;
     return;
   }
   if(tree[u][0]==p)
@@ -588,6 +590,8 @@ int main()
   }
   setxor(1,0);
   solve(1,0);
+  f(i,1,n+1)cout<<subxor[i]<<" ";
+  cout<<"\n";
   cout<<root[1]<<"\n";
   return 0; 	
 }

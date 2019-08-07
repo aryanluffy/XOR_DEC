@@ -531,7 +531,6 @@ void setxor(int u,int p)
     subxor[u]=subxor[u]^subxor[x];
   }
 }
-
 void solve(int u,int p)
 {
   for(auto x:tree[u])
@@ -539,23 +538,22 @@ void solve(int u,int p)
     if(x==p)continue;
     solve(x,u);
   }
-  if(tree[u].size()==1){
-    //if(subxor[u]==y)root[u]=1;
+  if(tree[u].size()==1 && tree[u][0]!=0){
     root[u]=1;
-    rootx[u]=1;
+    rootx[u]=0;
     return;
   }
   if(tree[u][0]==p)
   {
      int x=tree[u][1];
-     dp[u][0][1]=(root[x]+(subxor[x]==0)*rootx[x])+rootx[x]+(subxor[x]==y)*root[x];
-     dp[u][1][1]=(rootx[x]+(subxor[x]==y)*root[x])+root[x]+(subxor[x]==0)*rootx[x];
+     dp[u][0][1]=((subxor[x]==0)*rootx[x])+rootx[x]+(subxor[x]==y)*root[x];
+     dp[u][1][1]=((subxor[x]==y)*root[x])+root[x]+(subxor[x]==0)*rootx[x];
   }
   else
   {
      int x=tree[u][0];
-     dp[u][0][0]=(root[x]+(subxor[x]==0)*rootx[x])+rootx[x]+(subxor[x]==y)*root[x];
-     dp[u][1][0]=(rootx[x]+(subxor[x]==y)*root[x])+root[x]+(subxor[x]==0)*rootx[x];
+     dp[u][0][0]=((subxor[x]==0)*rootx[x])+rootx[x]+(subxor[x]==y)*root[x];
+     dp[u][1][0]=((subxor[x]==y)*root[x])+root[x]+(subxor[x]==0)*rootx[x];
   }
   int z=1;
   if(tree[u][0]==p)z++;
@@ -569,7 +567,6 @@ void solve(int u,int p)
      {dp[u][0][i]=dp[u][0][i-2]*(root[x]+(subxor[x]==0)*rootx[x])+dp[u][1][i-2]*(rootx[x]+(subxor[x]==y)*root[x]);
       dp[u][1][i]=dp[u][0][i-2]*(rootx[x]+(subxor[x]==y)*root[x])+dp[u][1][i-2]*(root[x]+(subxor[x]==0)*rootx[x]);}
   }
-  
   if(p==tree[u][tree[u].size()-1])
   root[u]=dp[u][1][tree[u].size()-2] ,rootx[u]=dp[u][0][tree[u].size()-2];
   else 
@@ -592,6 +589,6 @@ int main()
   solve(1,0);
   f(i,1,n+1)cout<<subxor[i]<<" ";
   cout<<"\n";
-  cout<<root[1]<<"\n";
+  cout<<root[1]*(subxor[1]==y)+rootx[1]*(subxor[1]==0)<<"\n";
   return 0; 	
 }
